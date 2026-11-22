@@ -713,6 +713,19 @@ On Windows, Docker Desktop must be running when using the Docker driver.
 
 ### **Step 2 — Create Deployment**
 
+docker tag my-web-project-webapp:latest my-web-project-webapp:v1
+minikube image load my-web-project-webapp:v1
+kubectl create deployment mypractice --image=my-web-project-webapp:v1
+kubectl get pods
+kubectl expose deployment mypractice --type=NodePort --port=8080 --target-port=8080
+kubectl get svc
+kubectl get pods
+kubectl port-forward svc/mypractice 8084:8080
+kubectl scale deployment mypractice --replicas=3
+kubectl get deployments
+kubectl get pods
+
+
 ```
 kubectl create deployment mynginx --image=nginx
 kubectl get deployments
@@ -919,6 +932,12 @@ docker rmi jasonrivers/nagios:latest
 
 24BD1A663D-week12.docx
 
+or
+
+
+
+
+
 
 
 ## **Experiment 9 — AWS EC2 Cloud Deployment**
@@ -998,6 +1017,12 @@ CMD ["java", "-cp", "app.jar", "shreeyanthd.java_exam_practice.App"]
 ```
 sudo docker build -t java-aws-demo .
 sudo docker run --name java-demo java-aws-demo
+
+or (for web)
+docker run -d -p 8081:8080 --name myapp-container myapp
+
+and then add custom tcp 8081 in inbound rules and then done 
+
 ```
 
 Expected:
