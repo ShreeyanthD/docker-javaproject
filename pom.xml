@@ -488,6 +488,86 @@ pipeline {
 }
 ```
 
+
+
+for web project:
+
+pipeline {
+    agent any
+
+    tools {
+        maven 'MAVEN_HOME'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main',
+                    url: 'https://github.com/ShreeyanthD/docker-javaproject.git'
+            }
+        }
+
+        stage('Clean') {
+            steps {
+                sh 'mvn clean'
+            }
+        }
+
+        stage('Install') {
+            steps {
+                sh 'mvn install'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                sh 'mvn test'
+            }
+        }
+
+        stage('Package') {
+            steps {
+                sh 'mvn package'
+            }
+        }
+
+        stage('Archive WAR') {
+            steps {
+                archiveArtifacts artifacts: 'target/*.war',
+                                 fingerprint: true
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'WAR BUILD SUCCESSFUL'
+        }
+        failure {
+            echo 'BUILD FAILED'
+        }
+        always {
+            echo 'Pipeline completed'
+        }
+    }
+}
+
+
+for deployment add this:
+
+stage('Deploy') {
+    steps {
+        deploy adapters: [
+            tomcat9(
+                credentialsId: 'tomcat-creds',
+                url: 'http://localhost:8081'
+            )
+        ],
+        contextPath: 'Webpath',
+        war: 'target/*.war'
+    }
+}
+
 **Important:** `MAVEN_HOME` must match the Maven tool name configured under **Manage Jenkins → Tools**.
 
 ### **C. Actual Scripted Pipeline syntax**
