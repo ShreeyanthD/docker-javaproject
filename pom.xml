@@ -96,6 +96,28 @@ Organized experiment-wise, with the **procedure, commands, Dockerfiles, Jenkins 
 
 Use it as a reference while practising. The most important thing in the exam is remembering the sequence of steps, not memorizing every command character by character.
 
+Multi stahe docker file for war project 
+
+FROM maven:3.9-eclipse-temurin-17 AS build
+WORKDIR /app
+COPY . .
+RUN mvn clean package -DskipTests
+
+FROM tomcat:10.1-jdk17
+RUN rm -rf /usr/local/tomcat/webapps/ROOT
+COPY --from=build /app/target/*.war /usr/local/tomcat/webapps/ROOT.war
+EXPOSE 8080
+CMD ["catalina.sh", "run"]
+
+
+
+
+
+
+
+
+
+
 ## **Experiment 1 — Docker: Single Container**
 
 **Aim:** Build and run an application inside one Docker container.
